@@ -1,5 +1,6 @@
 # -*- coding: cp1252 -*-
 import bf2, host, mm_utils, math, bf2.PlayerManager, datetime, os, sys
+from bf2.stats.constants import *
 
 
 # Module information #
@@ -45,7 +46,7 @@ class PolyAdmin(object):
         if 0 == self._state:
             #host.registerHandler( 'EnterVehicle', self.onEnterVehicle, 1 )
             #host.registerHandler( 'PlayerScore', self.onScore, 1 )
-            #host.registerHandler( 'PlayerKilled', self.onPlayerKilled, 1 )
+            host.registerHandler( 'PlayerDeath', self.onDeath, 1 )
             if dev == True:
                 host.registerHandler( 'ChatMessage', self.onChat, 1 )
             #host.registerHandler( 'PlayerSpawn', self.onPlayerSpawn, 1)
@@ -79,6 +80,24 @@ class PolyAdmin(object):
                     mm.error("Failed to load area file %s" % area)
         except:
             mm.error("Failed to load area %s: " % area["name"],True)
+            
+            
+# Actions #
+    def killPlayer(self, player):
+        vehicle = player.getVehicle()
+        rootVehicle = getRootParent(vehicle)
+        if getVehicleType(rootVehicle.templateName) == VEHICLE_TYPE_SOLDIER:
+            rootVehicle.setDamage(0)
+            # This should kill them !
+        else:
+            rootVehicle.setDamage(1) 
+            # a vehicle will likely explode within 1 sec killing entire crew,
+            # not so sure about base defenses though
+        player.safebasePunish = True
+        try:
+            player.setTimeToSpawn(0)
+        except:
+            pass
 # Event Handlers #
     def onGameStatusChanged(self, status):
         if status == bf2.GameStatus.Playing:
@@ -91,6 +110,13 @@ class PolyAdmin(object):
                 else:
                     cmd = [text[1:]]
                 self.onCommand(bf2.playerManager.getPlayerByIndex(playerId), cmd)
+    def onDeath(self, player, soldier):
+        if player.safebasePunish and player.safebasePunish == True:
+            try:
+                player.setTimeToSpawn(40)
+            except:
+                pass
+            player.safebasePunish = False
                 
     def onCommand(self, player, cmd):
         if cmd[0] == "pcreate":
@@ -123,8 +149,13 @@ class PolyAdmin(object):
             for obj in self._newPoly:
                 self.broadcast("%s: %s" % (str(obj), str(self._newPoly[obj])))
             
-    def onSafebase(self, player):
-        self.broadcast("[WARNING]: %s is inside a safebase!")
+    def onSafebase(self, polygon, player):
+        if player.isAlive():
+            player.score.score -= 5
+            self.killPlayer(player)
+            self.broadcast("%s has punished for violating the no-safebase rules. Entered %s" % (player.getName(), polygon.name))
+        else:
+            pass
         
         
         
@@ -177,7 +208,24 @@ class PolygonTrigger:
         if self.timer != None:
             self.timer.destroy()
             self.timer = None
-            
+    
+    def isPlayerInside(self, player):
+        if player != None and player.isAlive():
+            try:
+                vehicle = player.getDefaultVehicle()
+                pos = vehicle.getPosition()
+                if self.floor != -1:
+                    if self.floor < pos[1]:
+                        if self.height != -1:
+                            if self.height > pos[1] and self.polygon.isXYInside(pos[0], pos[2]) and self.callback: self.callback(self, player)
+                        else:
+                            if self.polygon.isXYInside(pos[0], pos[2]) and self.callback: self.callback(self, player)
+                else:
+                    if self.polygon.isXYInside(pos[0], pos[2]): 
+                        if(self.callback): self.callback(self, player)
+            except:
+                mm.error("isPlayerInside failed as well failed, damn these errors", True)
+        
     def onTick(self, data):
         for player in bf2.playerManager.getPlayers():
             if player.isAlive():
@@ -188,12 +236,12 @@ class PolygonTrigger:
                         if self.floor != -1:
                             if self.floor < pos[1]:
                                 if self.height != -1:
-                                    if self.height > pos[1] and self.polygon.isXYInside(pos[0], pos[2]) and self.callback: self.callback(player)
+                                    if self.height > pos[1] and self.polygon.isXYInside(pos[0], pos[2]) and self.callback: self.callback(self, player)
                                 else:
-                                    if self.polygon.isXYInside(pos[0], pos[2]) and self.callback: self.callback(player)
+                                    if self.polygon.isXYInside(pos[0], pos[2]) and self.callback: self.callback(self, player)
                         else:
                             if self.polygon.isXYInside(pos[0], pos[2]): 
-                                if(self.callback): self.callback(player)
+                                if(self.callback): self.callback(self, player)
                 except:
                     mm.error("onTick failed, damn these errors", True)
         
