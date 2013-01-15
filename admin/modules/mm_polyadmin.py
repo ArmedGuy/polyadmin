@@ -16,7 +16,14 @@ __description__ = "PolyAdmin AutoAdmin Module v%s" % __version__
 
 __author__ = "ArmedGuy from Pie-Studios"
 settings = {
-    "dalian_plant": ["us_safebase.sb","ch_safebase.sb"]
+    "dalian_plant": ["us_safebase.sb","ch_safebase.sb"],
+    "daqing_oilfields": ["us_safebase.sb","ch_safebase.sb"],
+    "dragon_valley": ["us_safebase.sb"],
+    "fushe_pass": ["us_safebase.sb", "ch_safebase.sb"],
+    "gulf_of_oman": ["us_safebase.sb", "ch_safebase.sb"],
+    "kubra_dam": ["us_safebase.sb1", "us_safebase.sb2"],
+    "operation_clean_sweep": ["us_safebase.sb"],
+    "sharqi_peninsula": ["mec_safebase.sb1", "mec_safebase.sb2", "mec_safebase.sb3"]
 }
 # Modmanager constant #
 mm = None
