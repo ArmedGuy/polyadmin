@@ -30,7 +30,7 @@ mm = None
 
 
 # Dev mode #
-dev = True
+dev = False
 # Code #
 def mm_load( modManager ):
 	return PolyAdmin( modManager, settings)
