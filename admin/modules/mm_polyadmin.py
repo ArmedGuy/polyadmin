@@ -325,7 +325,7 @@ class Polygon2D:
         return self.isPointInside(Point(x,y))
         
     def areLinesIntersecting(self, line1, line2):
-        # Props to Toto aka Thomas aka Cheese-eating surrender monkey for the following formulas
+        # Props to Toto aka Thomas aka Cheese-allergic surrender monkey for the following formulas
         p = ((line1.p1.y - line1.p2.y) * (line2.p2.x - line2.p1.x)) + ((line1.p2.x - line1.p1.x) * (line2.p2.y - line2.p1.y))
         if(p == 0):
             return False
