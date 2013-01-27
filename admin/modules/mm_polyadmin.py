@@ -23,7 +23,8 @@ settings = {
     "gulf_of_oman": ["us_safebase.sb", "ch_safebase.sb"],
     "kubra_dam": ["us_safebase.sb1", "us_safebase.sb2"],
     "operation_clean_sweep": ["us_safebase.sb"],
-    "sharqi_peninsula": ["mec_safebase.sb1", "mec_safebase.sb2", "mec_safebase.sb3"]
+    "sharqi_peninsula": ["mec_safebase.sb1", "mec_safebase.sb2", "mec_safebase.sb3"],
+    "strike_at_karkland": ["us_safebase.sb"]
 }
 # Modmanager constant #
 mm = None
