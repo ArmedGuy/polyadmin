@@ -24,7 +24,8 @@ settings = {
     "kubra_dam": ["us_safebase.sb1", "us_safebase.sb2"],
     "operation_clean_sweep": ["us_safebase.sb"],
     "sharqi_peninsula": ["mec_safebase.sb1", "mec_safebase.sb2", "mec_safebase.sb3"],
-    "strike_at_karkland": ["us_safebase.sb"]
+    "strike_at_karkland": ["us_safebase.sb"],
+    "zatar_wetlands": ["us_safebase.sb1", "us_safebase.sb2", "mec_safebase.sb"]
 }
 # Modmanager constant #
 mm = None
